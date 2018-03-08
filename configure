@@ -2682,13 +2682,14 @@ fi
 cat > $TMPC <<EOF
 #include <signal.h>
 #include <time.h>
-int main(void) { return clock_gettime(CLOCK_REALTIME, NULL); }
+int main(void) { timer_create(CLOCK_REALTIME, NULL, NULL); return clock_gettime(CLOCK_REALTIME, NULL); }
 EOF
 
 if compile_prog "" "" ; then
   :
-elif compile_prog "" "-lrt" ; then
+elif compile_prog "" "-lrt $pthread_lib" ; then
   LIBS="-lrt $LIBS"
+  libs_qga="-lrt $libs_qga"
 fi
 
 if test "$darwin" != "yes" -a "$mingw32" != "yes" -a "$solaris" != yes -a \
